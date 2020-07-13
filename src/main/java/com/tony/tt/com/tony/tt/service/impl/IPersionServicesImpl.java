@@ -9,13 +9,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.codec.Utf8;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.tony.tt.dao.PersionMapper;
 import com.tony.tt.service.IPersionServices;
-import com.tony.tt.utils.StaticHtmlTemple;
 import com.tony.tt.vo.User;
 
 import freemarker.template.Configuration;

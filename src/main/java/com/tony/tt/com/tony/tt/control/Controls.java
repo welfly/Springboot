@@ -1,8 +1,25 @@
 package com.tony.tt.control;
 
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.http.NameValuePair;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.EntityUtils;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,8 +29,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.tony.tt.service.IPersionServices;
 import com.tony.tt.vo.User;
-
-import freemarker.template.Configuration;
 
 @RestController
 public class Controls {
@@ -72,5 +87,69 @@ public class Controls {
 	@GetMapping(value = "/service")
 	public void ContentAdd()  {
 		
+	}
+	
+	public String doPost(String url, Map<String, String> param) {
+        // 创建Httpclient对象
+        CloseableHttpClient httpClient = HttpClients.createDefault();
+        CloseableHttpResponse response = null;
+        String resultString = "";
+        try {
+            // 创建Http Post请求
+            HttpPost httpPost = new HttpPost(url);
+            // 创建参数列表
+            if (null != param) {
+                List<NameValuePair> paramList = new ArrayList<>();
+                for (String key : param.keySet()) {
+                    paramList.add(new BasicNameValuePair(key, param.get(key)));
+                }
+                // 模拟表单
+                UrlEncodedFormEntity entity = new UrlEncodedFormEntity(paramList,"utf-8");
+                httpPost.setEntity(entity);
+            }
+            // 执行http请求
+            response = httpClient.execute(httpPost);
+            resultString = EntityUtils.toString(response.getEntity(), "utf-8");
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+            	if(null != response) {
+            		response.close();
+            	}
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+ 
+        return resultString;
+    }
+	/**
+	 * 操作html字符串
+	 * @param request
+	 * @param response
+	 * @throws IOException
+	 */
+	@GetMapping("newsInfo")
+	public void WStoHtml(HttpServletRequest request,HttpServletResponse response) throws IOException{
+//		String url = request.getParameter("url");
+//		String url = "https://www.cnblogs.com/minjieagile/p/13291539.html";
+		String url = "http://localhost:9092/E$/004_myself/tt/htmls/2.html";
+		
+		String body = doPost(url,new HashMap<String, String>());//body为获取的html代码
+	    //System.out.println(body);
+	    //System.out.println("11111");
+	    Document doc = Jsoup.parse(body);
+//	    Elements es =  doc.select("table");
+//	    for (Element element : es) {
+//            element.html("123");//将table的内容替换为123
+//        }
+//	    for (Element element : es) {
+//            System.out.println(element.html());
+//        }
+//	    System.out.println(doc.outerHtml());
+	    response.setContentType("text/html;charset=utf-8"); 
+	    PrintWriter out=response.getWriter();
+	    out.println(doc.outerHtml());
 	}
 }

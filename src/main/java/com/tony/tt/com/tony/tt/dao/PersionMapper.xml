@@ -17,4 +17,8 @@
     <update id="updateByName" parameterType="com.tony.tt.vo.User" >
     	UPDATE User set gender=#{gender}, age=#{age}, phoneNo=#{phoneNo}, addr=#{addr} where name=#{name};
     </update>
+    
+    <select id="findMaxId" resultType="java.lang.Integer" >
+    	select max(id) from User;
+    </select>
 </mapper>

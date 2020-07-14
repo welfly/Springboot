@@ -10,9 +10,11 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
@@ -58,8 +60,11 @@ public class Controls {
 //	使用postman 直接报错403， 使用get方法
 	@GetMapping("/add1")
 	public Map<String, Object> addUser(User u) {
-		System.out.println(u);
-		return iPersionServices.addOne(u);
+//		System.out.println(u);
+		Map<String, Object> m = new HashMap<String, Object>();
+		iPersionServices.addOne(u);
+		
+		return m;
 	}
 	
 	@GetMapping("/delete/{id}")
@@ -97,6 +102,7 @@ public class Controls {
         try {
             // 创建Http Post请求
             HttpPost httpPost = new HttpPost(url);
+            HttpGet httpGet = new HttpGet(url);
             // 创建参数列表
             if (null != param) {
                 List<NameValuePair> paramList = new ArrayList<>();
@@ -105,10 +111,11 @@ public class Controls {
                 }
                 // 模拟表单
                 UrlEncodedFormEntity entity = new UrlEncodedFormEntity(paramList,"utf-8");
-                httpPost.setEntity(entity);
+                 httpPost.setEntity(entity);
             }
             // 执行http请求
-            response = httpClient.execute(httpPost);
+//            response = httpClient.execute(httpPost);
+            response = httpClient.execute(httpGet);
             resultString = EntityUtils.toString(response.getEntity(), "utf-8");
         } catch (Exception e) {
             e.printStackTrace();
@@ -130,11 +137,11 @@ public class Controls {
 	 * @param response
 	 * @throws IOException
 	 */
-	@GetMapping("newsInfo")
-	public void WStoHtml(HttpServletRequest request,HttpServletResponse response) throws IOException{
-//		String url = request.getParameter("url");
+	@GetMapping("pages/{i}")
+	public void WStoHtml(HttpServletRequest request,HttpServletResponse response, @PathVariable String i) throws IOException{
+//		String urls = request.getParameter("url");
 //		String url = "https://www.cnblogs.com/minjieagile/p/13291539.html";
-		String url = "http://localhost:9092/E$/004_myself/tt/htmls/2.html";
+		String url = "http://localhost:9092/pages/"+i;
 		
 		String body = doPost(url,new HashMap<String, String>());//body为获取的html代码
 	    //System.out.println(body);

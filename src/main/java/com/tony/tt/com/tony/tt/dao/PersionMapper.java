@@ -10,4 +10,5 @@ public interface PersionMapper {
 	int addOne(User u) throws Exception;
 	int d1 (int id) throws Exception;
 	int updateByName (User u) throws Exception;
+	int findMaxId() throws Exception;
 }

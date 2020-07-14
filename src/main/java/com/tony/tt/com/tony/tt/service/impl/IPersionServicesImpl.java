@@ -106,6 +106,10 @@ public class IPersionServicesImpl implements IPersionServices {
 		Map<String, Object> restM = new HashMap<String, Object>();
 		try {
 			rest = persionMapper.addOne(u);
+			if(0 != rest) {
+				int id = findMaxId();
+				findByIdi(id);
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -152,6 +156,17 @@ public class IPersionServicesImpl implements IPersionServices {
 			restM.put("msg", 404);
 		}
 		return restM;
+	}
+
+	@Override
+	public int findMaxId() {
+		int rest = 0;
+		try {
+			rest = persionMapper.findMaxId();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return rest;
 	}
 
 }

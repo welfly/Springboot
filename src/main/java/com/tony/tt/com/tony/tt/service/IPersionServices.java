@@ -9,6 +9,6 @@ public interface IPersionServices {
 	Map<String, Object> addOne(User u);
 	Map<String, Object> delet(int id);
 	Map<String, Object> update1(User u);
-	
+	int findMaxId ();
 	
 }
